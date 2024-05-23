@@ -209,8 +209,12 @@ async def on_voice_state_update(member, before, after):
             logging.info(f"{member.name} joined to VC")
         #退出
         if (before.channel is not None) and (after.channel is not before.channel) and not (before.afk):
-            result = int(time.time()) - int(data.TIME_START[str(member.id)])
-            data.SERVERS[str(member.guild.id)][str(member.id)] += result
+            if data.TIME_START[str(member.id)] != 0:
+                result = int(time.time()) - int(data.TIME_START[str(member.id)])
+                data.SERVERS[str(member.guild.id)][str(member.id)] += result
+            else:
+                print(f"{member}の記録時間が0秒だったため、記録をスキップしました。")
+            data.TIME_START[str(member.id)] = 0
             print(f"{member}が{before.channel.guild.name}VCから退出しました")
             logging.info(f"{member.name} left the VC")
             save()
